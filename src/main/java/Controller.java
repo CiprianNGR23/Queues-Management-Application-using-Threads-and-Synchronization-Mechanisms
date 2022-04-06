@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -9,9 +11,16 @@ public class Controller implements ActionListener{
     private GUI_APP view;
     private SimulationManager simManager;
     private SelectionPolicy policy;
+    private PrintWriter obj;
 
     public Controller(GUI_APP view) {
         this.view = view;
+
+        try {
+            this.obj = new PrintWriter("printLogs3.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         this.view.addSTARTListener(this);
         this.view.addRESETListener(this);
@@ -21,9 +30,20 @@ public class Controller implements ActionListener{
     }
 
     public void updateView(ArrayBlockingQueue<Task> generatedTasks, List<Server> servers, int timeSim) {
+        String textClients = view.getTextAreaClients().getText() + "\n" + generatedTasks.toString();
+        String textQueues = view.getTextAreaQueues().getText() + "\n" + "timeSim: " + timeSim + "\n" +servers.toString();
         if(!generatedTasks.isEmpty())
-            view.getTextAreaClients().setText(view.getTextAreaClients().getText() + "\n" + generatedTasks.toString());
-        view.getTextAreaQueues().setText(view.getTextAreaQueues().getText() + "\n" + "timeSim: " + timeSim + "\n" +servers.toString());
+            view.getTextAreaClients().setText(textClients);
+        view.getTextAreaQueues().setText(textQueues);
+
+        if(!generatedTasks.isEmpty())
+            obj.printf(generatedTasks.toString());
+        obj.println();
+        obj.printf("timeSim: " + timeSim + "\n" +servers.toString());
+    }
+
+    public void closeFileLog() {
+        obj.close();
     }
 
     @Override

@@ -108,10 +108,15 @@ public class SimulationManager implements Runnable{
             currentTime++;
             checkForRun();
         }
+        controller.closeFileLog();
     }
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     public int getTimeLimit() {
