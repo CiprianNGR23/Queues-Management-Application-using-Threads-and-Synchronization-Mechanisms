@@ -17,6 +17,7 @@ public class SimulationManager implements Runnable{
     public int numberOfClients; // = 100;
     public int maxArrivalTime;
     public int minArrivalTime;
+    private boolean running;
     public SelectionPolicy selectionPolicy; //= SelectionPolicy.SHORTEST_TIME;
 
     //entity responsible wit queue management and client distribution
@@ -44,6 +45,7 @@ public class SimulationManager implements Runnable{
         this.minProcessingTime = minProcessingTime;
         this.maxProcessingTime = maxProcessingTime;
         this.controller = controller;
+        this.running = true;
 
        /* System.out.println("nbC: " + numberOfClients + "\nnbS: " + numberOfServers +
                 "\ntimeL: " + timeLimit + "\nminA: " + minArrivalTime + "\nmaxA: " + maxArrivalTime +
@@ -76,9 +78,21 @@ public class SimulationManager implements Runnable{
         return queueTask;
     }
 
+    public void checkForRun() {
+        if(generatedTasks.isEmpty()) {
+            running = false;
+            for (Server serv : scheduler.getServers()) {
+                if (serv.isRunning()) {
+                    running = true;
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public void run() {
-        while(currentTime < timeLimit) {
+        while(currentTime < timeLimit && running == true) {
             for (Task client : generatedTasks) {
                 if(client.getArrivalTime() == currentTime) {
                     scheduler.dispatchTask(client);
@@ -92,7 +106,12 @@ public class SimulationManager implements Runnable{
                 e.printStackTrace();
             }
             currentTime++;
+            checkForRun();
         }
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     public int getTimeLimit() {

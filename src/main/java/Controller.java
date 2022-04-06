@@ -60,7 +60,9 @@ public class Controller implements ActionListener{
             }
         }
         else if(e.getSource() == view.getRESETButton()) {
-            System.out.println("DAD");
+            view.getTextAreaClients().setText("");
+            view.getTextAreaQueues().setText("");
+            simManager.setRunning(false);
         }
     }
 

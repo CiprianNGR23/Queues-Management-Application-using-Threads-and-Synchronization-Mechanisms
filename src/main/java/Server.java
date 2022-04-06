@@ -6,24 +6,34 @@ public class Server implements Runnable{
 
     private BlockingQueue<Task> tasks;
     private AtomicInteger waitingPeriod;
+    private boolean running;
 
     public Server(int maxTasksPerServer) {
         this.tasks = new ArrayBlockingQueue<Task>(maxTasksPerServer);
         this.waitingPeriod = new AtomicInteger();
+        this.running = true;
     }
 
     public void addTask(Task newTask) {
         tasks.add(newTask);
+        this.running = true;
         this.waitingPeriod.getAndAdd(newTask.getServiceTime());
     }
 
     @Override
     public void run() {
-        while(true) {
+        while(running) {
             //take next task from queue
             Task val = tasks.peek();
             if(val != null) {
                 //stop the thread for a time equal with the task's processing time
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 if(val.getServiceTime() == 1)
                     tasks.remove(val);
                 else {
@@ -31,14 +41,14 @@ public class Server implements Runnable{
                     this.waitingPeriod.getAndDecrement();
                 }
                 //decrement the waitingPeriod
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
+            if(tasks.isEmpty())
+                running = false;
         }
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     public Task[] getTasks() {

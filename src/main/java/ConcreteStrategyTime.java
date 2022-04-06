@@ -14,6 +14,8 @@ public class ConcreteStrategyTime implements Strategy{
             }
         });
 
+        if(servers.get(0).isRunning() == false)
+            new Thread(servers.get(0)).start();
         servers.get(0).addTask(t);
 
     }
