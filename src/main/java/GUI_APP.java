@@ -19,6 +19,8 @@ public class GUI_APP extends JFrame{
     private JScrollPane scrollPaneQueues;
     private JCheckBox checkBoxQueue;
     private JCheckBox checkBoxTime;
+    private JLabel peekTime;
+    private JLabel avgTime;
     private JTextArea textAreaClients;
     private JTextArea textAreaQueues;
 
@@ -39,6 +41,14 @@ public class GUI_APP extends JFrame{
 
     public JTextArea getTextAreaQueues() {
         return textAreaQueues;
+    }
+
+    public JLabel getPeekTime() {
+        return peekTime;
+    }
+
+    public JLabel getAvgTime() {
+        return avgTime;
     }
 
     public JTextField getTextField1() {

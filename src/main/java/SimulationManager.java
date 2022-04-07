@@ -90,8 +90,19 @@ public class SimulationManager implements Runnable{
         }
     }
 
+    public int peekMaxClientsTime(int maxTimeSize) {
+        int sum = 0;
+        for(Server serv: scheduler.getServers()) {
+            sum += serv.getTasks().size();
+        }
+        if(maxTimeSize < sum)
+            maxTimeSize = sum;
+        return maxTimeSize;
+    }
+
     @Override
     public void run() {
+        int maxTimeSize = 0;
         while(currentTime < timeLimit && running == true) {
             for (Task client : generatedTasks) {
                 if(client.getArrivalTime() == currentTime) {
@@ -99,7 +110,8 @@ public class SimulationManager implements Runnable{
                     generatedTasks.remove(client);
                 }
             }
-            controller.updateView(generatedTasks, scheduler.getServers(), currentTime);
+            maxTimeSize = peekMaxClientsTime(maxTimeSize);
+            controller.updateView(generatedTasks, scheduler.getServers(), currentTime, maxTimeSize);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -109,6 +121,7 @@ public class SimulationManager implements Runnable{
             checkForRun();
         }
         controller.closeFileLog();
+        controller.updateAvgTime(scheduler.getWaitingTime() / numberOfClients);
     }
 
     public void setRunning(boolean running) {

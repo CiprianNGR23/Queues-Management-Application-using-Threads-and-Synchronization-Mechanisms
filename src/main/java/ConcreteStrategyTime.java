@@ -5,7 +5,7 @@ import java.util.List;
 public class ConcreteStrategyTime implements Strategy{
 
     @Override
-    public void addTask(List<Server> servers, Task t) {
+    public int addTask(List<Server> servers, Task t) {
 
         Collections.sort(servers, new Comparator<Server>() {
             @Override
@@ -16,7 +16,6 @@ public class ConcreteStrategyTime implements Strategy{
 
         if(servers.get(0).isRunning() == false)
             new Thread(servers.get(0)).start();
-        servers.get(0).addTask(t);
-
+        return servers.get(0).addTask(t);
     }
 }

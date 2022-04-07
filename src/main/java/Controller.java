@@ -17,7 +17,7 @@ public class Controller implements ActionListener{
         this.view = view;
 
         try {
-            this.obj = new PrintWriter("printLogs3.txt");
+            this.obj = new PrintWriter("printLogsTest.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -29,9 +29,12 @@ public class Controller implements ActionListener{
 
     }
 
-    public void updateView(ArrayBlockingQueue<Task> generatedTasks, List<Server> servers, int timeSim) {
+    public void updateView(ArrayBlockingQueue<Task> generatedTasks, List<Server> servers, int timeSim, int maxTime) {
         String textClients = view.getTextAreaClients().getText() + "\n" + generatedTasks.toString();
         String textQueues = view.getTextAreaQueues().getText() + "\n" + "timeSim: " + timeSim + "\n" +servers.toString();
+
+        view.getPeekTime().setText(maxTime + "s");
+
         if(!generatedTasks.isEmpty())
             view.getTextAreaClients().setText(textClients);
         view.getTextAreaQueues().setText(textQueues);
@@ -40,6 +43,10 @@ public class Controller implements ActionListener{
             obj.printf(generatedTasks.toString());
         obj.println();
         obj.printf("timeSim: " + timeSim + "\n" +servers.toString());
+    }
+
+    public void updateAvgTime(float avgTime) {
+        view.getAvgTime().setText(avgTime + "s");
     }
 
     public void closeFileLog() {
@@ -82,6 +89,8 @@ public class Controller implements ActionListener{
         else if(e.getSource() == view.getRESETButton()) {
             view.getTextAreaClients().setText("");
             view.getTextAreaQueues().setText("");
+            view.getAvgTime().setText("");
+            view.getPeekTime().setText("");
             simManager.setRunning(false);
         }
     }

@@ -5,7 +5,7 @@ import java.util.List;
 public class ConcreteStrategyQueue implements Strategy{
 
     @Override
-    public void addTask(List<Server> servers, Task t) {
+    public int addTask(List<Server> servers, Task t) {
 
         List<Server> copyServer = servers;
         Collections.sort(servers, new Comparator<Server>() {
@@ -17,7 +17,6 @@ public class ConcreteStrategyQueue implements Strategy{
 
         if(servers.get(0).isRunning() == false)
             new Thread(servers.get(0)).start();
-        servers.get(0).addTask(t);
-
+        return servers.get(0).addTask(t);
     }
 }

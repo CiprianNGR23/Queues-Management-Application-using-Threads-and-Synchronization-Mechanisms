@@ -14,10 +14,11 @@ public class Server implements Runnable{
         this.running = true;
     }
 
-    public void addTask(Task newTask) {
+    public int addTask(Task newTask) {
         tasks.add(newTask);
         this.running = true;
         this.waitingPeriod.getAndAdd(newTask.getServiceTime());
+        return this.waitingPeriod.get();
     }
 
     @Override
@@ -51,8 +52,8 @@ public class Server implements Runnable{
         return running;
     }
 
-    public Task[] getTasks() {
-        return new Task[0];
+    public BlockingQueue<Task> getTasks() {
+        return tasks;
     }
 
     public AtomicInteger getWaitingPeriod() {

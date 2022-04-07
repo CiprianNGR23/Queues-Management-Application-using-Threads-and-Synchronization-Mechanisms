@@ -7,6 +7,7 @@ public class Scheduler {
     private int maxNoServers;
     private int maxTasksPerServer;
     private Strategy strategy;
+    private int waitingTime;
 
     public Scheduler(int maxNoServers, int maxTasksPerServer) {
         this.maxNoServers = maxNoServers;
@@ -35,13 +36,14 @@ public class Scheduler {
 
     public void dispatchTask(Task t) {
         //call the strategy addTask method
-        strategy.addTask(servers, t);
+        waitingTime += strategy.addTask(servers, t);
     }
 
     public List<Server> getServers() {
         return servers;
     }
 
-
-
+    public int getWaitingTime() {
+        return waitingTime;
+    }
 }
